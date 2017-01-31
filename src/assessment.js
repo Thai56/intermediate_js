@@ -48,13 +48,24 @@ var foo;
   Use $q to create a promise object and return the promise.
   Call setTimeout on a function which sets the variable foo (above) to 'bar' and then resolve the promise when setTimeout completes.
 */
+function async(){
+  var defer = $q.defer()
+  setTimeout(defer.resolve(fooChanger()),2500)
+  return defer.promise;
+}
 
-
+function fooChanger(){
+  foo = 'bar'
+  console.log(foo);
+  return foo;
+}
 // #3  ###################
 // # Context 1
 // Write a function called context1 that takes in 4 parameters: A function called myFn, an object called context, param1, and param2.
 // Invoke myFn and explicitly set the context to the object called context and pass in param1 and param2 in order. Return the result.
-
+function context1(myFn,context,param1,param2){
+  return myFn.call(context,param1,param2)
+}
 
 
 
@@ -63,7 +74,9 @@ var foo;
 // Write a function called context2 that takes in 3 parameters: A function called myFn, an object called context, and an array called params.
 // Invoke myFn and explicitly set the context to the object called context and pass in the params array. Return the result.
 
-
+function context2(myFn,context,params){
+  return myFn.apply(context,params)
+}
 
 
 // #5  ###################
@@ -71,43 +84,70 @@ var foo;
 // Write a function called context3 that takes in 2 parameters: A function called myFn, and an object called context.
 // Make sure the function is permanently linked to the context and return it.
 
-
+function context3(myFn,context){
+  return myFn.bind(context)
+}
 
 
 // #6  ###################
 // # Constructor Function
 // Make a constructor function called taco that takes in 3 parameters: shell, meat, veggies and assigns them to identically named properties.
 
-
+function Taco(shell,meat,veggies){
+  this.shell = shell;
+  this.meat = meat;
+  this.veggies = veggies;
+}
 
 
 // #7  ###################
 // # Implicit binding
 // Make a constructor function called burrito. Give it a property called percentLeft and set it equal to 100. Give it another property called eat that is a function. When eat is invoked it uses context to subtract 25 from the percentLeft property on the burrito.
 
-
+function Burrito(){
+  this.percentLeft = 100;
+  this.eat = function(){
+    return this.percentLeft -= 25;
+  }
+}
 
 // #8  ###################
 // # Prototype 1
 // Add a prototype function to the Array type that doubles the value of every item in the array and returns the modified array.
-
-
+Array.prototype.doubler = function(arr){
+  var myArray;
+  var i,j = this.length
+  var counter;
+  for( i=0; i<j;i++){
+    this[i] *= 2
+  }
+  return this
+}
 
 
 // #9  ###################
 // # Prototype 2
 // Write a constructor function called chimichanga. Give it a property called percentLeft and set it equal to 100. Give it a prototype function called eat. When eat is invoked it uses context to subtract 20 from the percentLeft property on the chimichanga.
 
+function Chimichanga(){
+  this.percentLeft = 100;
+}
 
-
+Chimichanga.prototype.eat = function(){
+  return this.percentLeft -= 20;
+}
 
 // #10  ###################
 // # Closure 1
 // Write a function called sentence machine that takes in a parameter called partOne and returns a function called sentenceSmasher.
 // When sentenceSmasher is invoked it should take in a parameter called partTwo and return a new string that adds partOne and partTwo together.
 
+function sentenceMachine(partOne){
+  return function sentenceSmasher(partTwo){
+    return partOne + partTwo;
+  }
 
-
+}
 // #11  ###################
 // # Closure 2
 // Write a function called subway that takes in one parameter called personName.
@@ -121,7 +161,19 @@ var foo;
 // }
 // ```
 
-
+function subway(personName){
+  var myArray = []
+  return function addIngredient(ing){
+    myArray.push(ing)
+    var newArray = myArray
+    console.log(newArray);
+    newArray = newArray.concat(newArray)
+    return {
+      orderPerson:personName,
+      ingredients:newArray
+    }
+  }
+}
 
 // #12  ###################
 // # Type checking
@@ -129,3 +181,14 @@ var foo;
 // If both parameters are the same type and the same value return "Exact match".
 // If both parameters have the same value but are different types return "Different types".
 // Otherwise return "Different values".
+
+
+function compareValues(par1,par2) {
+    if(typeof par1 === typeof par2 && par1 === par2){
+      return 'Exact match';
+    }
+    else if(typeof par1 !== typeof par2 && par1 == par2){
+      return "Different types";
+    }
+    return "Different values"
+}
